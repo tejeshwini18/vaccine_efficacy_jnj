@@ -1,0 +1,61 @@
+*{
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    color:black;
+    box-sizing: border-box;
+  }
+  
+.App{
+    display:inline;
+}
+.App h2{
+    color:black;
+    text-align: center;
+    text-decoration: double;
+    background-color: rgb(9, 120, 231);
+    margin-bottom: 20px;
+}
+
+.logo{
+    display:inline-flex;
+    align-items: left;
+    justify-content:space-around;
+    margin-left: 10px;
+    border-bottom: 2px solid;
+}
+.logo img{
+    width:10%;
+    height:20%;
+}
+.logo a{
+    display: inline;
+    text-decoration: underline;
+    justify-content:space-around;
+    margin-top: 150px;
+    margin-right: 10px;
+    color: blue;
+    font-size: 20px;
+}
+.logo a:hover{
+    color:violet;
+}
+.App button{
+    padding:9px 50px;
+    align-items: left;
+    margin-left: 150px;
+    margin-top:30px;
+    background-color: rgb(68, 7, 167);
+    border:none;
+    border-radius: 50px;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+}
+.App button:hover{
+    background-color: violet;
+}
+.App label{
+    align-items: center;
+    margin-left:10px;
+    padding-top: 50px;
+}
