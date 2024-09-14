@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="Diagnosis-Chart" style="width:100%;max-width:700px"></canvas>
+    <hr>
+    <canvas id="Gender-Chart" style="width:100%;max-width:700px"></canvas>
+    <hr>
+    <canvas id="Symptom-Chart" style="width:100%;max-width:700px"></canvas>
+    <hr>
+
+    <script>
+        var temp = 
+        [{
+            "xVal": ["M","F"],
+            "yVal": ["18","8"]
+        },
+
+        {
+            "xVal":["rheumatic artheritis","vertigo","angina"],
+            "yVal":["8","1","1"]
+        },
+
+        {
+            "xVal":["dizziness","fever","breathing problem","sore throat","joint pain","adverse effect of covid vaccine","pain in neck","vomiting ","chest pain", "breathlessness","headache","bodyache"],
+            "yVal":["16","16","15","15","4","4","1","1","1","1","1","1"]
+        },
+
+        {
+            "xVal":["adverse effect of covid19","presence of mucus in lungs","regular heart beat","clear heart beat"],
+            "yVal":["16","15","15","4"]
+        },
+
+        {
+            "xVal":["60-65","65-70","70-75","75-80","80-85","85-90","90-95","95-100"],
+            "yVal":["1","8","2","3","3","2","2","5"]
+        }
+
+        ]
+    </script>
+
+    <script>
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = ["rgb(227, 154, 102)", "rgb(55, 189, 86)","blue","orange","brown"];
+    </script>
+
+    <script>
+        new Chart("Diagnosis-Chart", {
+        type: "pie",
+        data: {
+            labels: temp[1]["xVal"],
+            datasets: [{
+            backgroundColor: barColors,
+            data: temp[1]["yVal"]
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 adverse effect - Diagnosis"
+            }
+        }
+        });
+    </script>
+
+    <script>
+        new Chart("Gender-Chart", {
+        type: "pie",
+        data: {
+            labels: temp[0]['xVal'],
+            datasets: [{
+            backgroundColor: barColors,
+            data: temp[0]['yVal']
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 Adverse Effect - Gender Distribution"
+            }
+        }
+        });
+    </script>
+    <script>
+        new Chart("Symptom-Chart", {
+        type: "doughnut",
+        data: {
+            labels: temp[2]['xVal'],
+            datasets: [{
+            backgroundColor: barColors,
+            data: temp[2]['yVal']
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 Adverse Effect - Symptoms"
+            }
+        }
+        });
+    </script>
+</body>
+</html>

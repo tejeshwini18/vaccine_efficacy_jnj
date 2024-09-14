@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='detail.css') }}">
+    <title>Adverse Effect</title>
+</head>
+<body>
+
+    <a href="/downloadAdverse">Download CSV</a></td>
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-lg-6 p-5">
+                <div class="card" style="width: 35rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">Covid19 Adverse Effect - Gender Distribution</h5>
+                      <canvas id="Gender-Chart" style="width:100%;max-width:700px"></canvas>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="col-lg-6 p-5">
+                    <div class="card" style="width: 35rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Covid19 Adverse Effect - Symptoms</h5>
+                          <canvas id="Symptom-Chart" style="width:100%;max-width:700px"></canvas>
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 p-5">
+                <div class="card" style="width: 35rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">Covid19 Adverse Effect - Diagnosis</h5>
+                      <canvas id="Diagnosis-Chart" style="width:100%;max-width:700px"></canvas>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="col-lg-6 p-5">
+                    <div class="card" style="width: 35rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Covid19 Adverse Effect - Age Distribution</h5>
+                          <canvas id="Age-Chart" style="width:100%;max-width:700px"></canvas>
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        var barColors = ["rgb(227, 154, 102)", "rgb(55, 189, 86)","blue","orange","brown"];
+    </script>
+    <script>
+        var gen_data;
+        gen_data = {{data['gen'] | safe}};
+        var total,m_count,f_count;
+        m_count = gen_data['M'];
+        f_count = gen_data['F'];
+        total = m_count+f_count;
+
+        
+        new Chart("Gender-Chart", {
+        type: "pie",
+        data: {
+            labels: Object.keys(gen_data),
+            datasets: [{
+            backgroundColor: barColors,
+            data: [Math.round((m_count/total)*100),Math.round((f_count/total)*100)]
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 Adverse Effect - Gender Distribution"
+            }
+        }
+        });
+    </script>
+    <script>
+        var dia_data;
+        dia_count = {{count2 | safe}};
+        dia_data = {{data['dia'] | safe}};
+        dia_sum = 0;
+        dia_ar = Object.values(dia_data);
+        for (let i = 0; i < dia_ar.length; i++) {
+            dia_sum += dia_ar[i];
+        }
+
+        new_dia_arr = dia_ar.map((i) => {
+            return Math.round((i/dia_sum)*100);
+        });
+        new Chart("Diagnosis-Chart", {
+        type: "pie",
+        data: {
+            labels: Object.keys(dia_data),
+            datasets: [{
+            backgroundColor: barColors,
+            data: new_dia_arr
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 adverse effect - Diagnosis (Total Count "+dia_count+")"
+            }
+        }
+        });
+    </script>
+    <script>
+        var symp_data;
+        symp_data = {{data['symp'] | safe}};
+        symp_sum = 0;
+        symp_ar = Object.values(symp_data);
+        for (let i = 0; i < symp_ar.length; i++) {
+            symp_sum += symp_ar[i];
+        }
+
+        new_symp_arr = symp_ar.map((i) => {
+            return Math.round((i/symp_sum)*100);
+        });
+        new Chart("Symptom-Chart", {
+        type: "doughnut",
+        data: {
+            labels: Object.keys(symp_data),
+            datasets: [{
+            backgroundColor: barColors,
+            data: new_symp_arr
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 Adverse Effect - Symptoms"
+            }
+        }
+        });
+    </script>
+    <script>
+        var age_data;
+        age_data = {{data['age'] | safe}};
+        new Chart("Age-Chart", {
+        type: "bar",
+        data: {
+            labels: Object.keys(age_data),
+            datasets: [{
+            backgroundColor: barColors,
+            data: Object.values(age_data)
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 Adverse Effect - Age Distribution"
+            }
+        }
+        });
+    </script>
+</body>
+</html>
