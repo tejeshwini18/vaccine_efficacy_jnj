@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="Bar-Chart" style="width:100%;max-width:700px"></canvas>
+    <canvas id="Pie-Chart" style="width:100%;max-width:700px"></canvas>
+    <canvas id="Pie-Chart1" style="width:100%;max-width:700px"></canvas>
+
+
+    <script>
+        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+        var yValues = [55, 49, 44, 24, 15];
+        var barColors = ["rgb(227, 154, 102)", "rgb(55, 189, 86)","blue","orange","brown"];
+    </script>
+
+    <script>
+        new Chart("Bar-Chart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 adverse effect"
+            }
+        }
+        });
+    </script>
+
+    <script>
+        new Chart("Pie-Chart", {
+        type: "pie",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "Covid19 adverse effect"
+            }
+        }
+        });
+    </script>
+    <script>
+        new Chart("Pie-Chart1", {
+        type: "doughnut",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+        options: {
+            title: {
+            display: true,
+            text: "COvid19 Adverse Effect"
+            }
+        }
+        });
+    </script>
+</body>
+</html>
