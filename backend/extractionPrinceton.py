@@ -1,5 +1,4 @@
 import pandas as pd
-# from codecarbon import EmissionsTracker
 from IPython.display import display,HTML
 import fitz
 import pytesseract
@@ -57,9 +56,6 @@ def pdf2text(file):
 path="./UploadFolder/dataset"
 paths=os.listdir(path) 
 
-
-
-
 # DataFrame for storing Data
 df=pd.DataFrame({
     'CLINIC_NAME':[],
@@ -115,8 +111,6 @@ def between(value, a,b):
     text=value[adjusted_pos_a :pos_b]
     return text.strip()
 
-
-
 # Extraction of Data
 def extractData(text,BP,height,weight,pulse,spo2):
     CLINIC_NAME='Princeton Hospital'
@@ -128,7 +122,6 @@ def extractData(text,BP,height,weight,pulse,spo2):
     DOCTOR_CONTACT=' '
     DOCTOR_EMAIL=' '
     DATE_OF_VISIT=between(text,"Date of visit-","SSN")
-
     PATIENT_NAME=between(text,"Patient Name-","Address")
     PATIENT_DOB=' '
     PATIENT_AGE=between(text,"Age-","Gender")
@@ -146,7 +139,6 @@ def extractData(text,BP,height,weight,pulse,spo2):
     SPO2=between(spo2,"SPO2","")
     HEIGHT=between(height,"Height","")
     WEIGHT=between(weight,"Weight","")
-
     vaccination=between(text,"Vaccination Status:","Observation")
     vac=vaccination.split(' ')
     vac2=' '.join(vac[1:3])
@@ -157,21 +149,11 @@ def extractData(text,BP,height,weight,pulse,spo2):
     BOOSTER_ON=' '
     DIAGNOSIS=between(text,"Diagnosis-","Medicines")
     MEDICINES=between(text,"Duration","Suggested")
-
     LAB_INVESTIGATION=between(text,"Investigation-","Advice")
     ADVICE=between(text,"Advice-","Doctor")
-
     FOLLOW_UP_DATE=between(text,"Next Visit Date-","")
-
-
     df.loc[len(df.index)]= [CLINIC_NAME,CLINIC_ADDRESS,CLINIC_CONTACT,CLINIC_EMAIL,DOCTOR_NAME,DOCTOR_SSN,DOCTOR_CONTACT,DOCTOR_EMAIL,DATE_OF_VISIT,PATIENT_NAME,PATIENT_DOB,PATIENT_AGE,PATIENT_ADDRESS,PATIENT_CONTACT,PATIENT_EMAIL,PATIENT_SSN,PATIENT_HID,PATIENT_GENDER,SYMPTOMS,OBSERVATION,BLOOD_PRESSURE,PULSE_RATE,SPO2,HEIGHT,WEIGHT,COVID_VACCINE_STATUS,COVID_VACCINE_NAME,DOSE1_ON,DOSE2_ON,BOOSTER_ON,DIAGNOSIS,MEDICINES,LAB_INVESTIGATION,ADVICE, FOLLOW_UP_DATE]
 
-
-
-# tracker=EmissionsTracker()
-
-
-# @track_emissions(offline=True, country_iso_code="IND")
 def extract():
     i=1
     print("Data Extraction Started..")

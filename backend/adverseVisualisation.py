@@ -6,6 +6,7 @@ def isSevere(str):
       if item.lower() in severe:
           severeflag=1
   return severeflag
+
 def getGender(df,df2):
       df['PATIENT_GENDER'] = df['PATIENT_GENDER'].astype(str)
       df2['PATIENT_GENDER'] = df2['PATIENT_GENDER'].astype(str)

@@ -30,6 +30,8 @@ y = [i for i in range(100)]
 @app.route('/')
 def hello():
   return {'hi':1,'bye':2}
+
+
 @app.route('/upload',methods=['GET','POST'])
 def upload():
     if request.method=="POST":
@@ -51,11 +53,12 @@ def upload():
 def downloadFiltered():
     path = r"C:\Users\1945686\OneDrive - TCS COM PROD\EHR Rest\Backend\Updated_Main.csv"
     return send_file(path, as_attachment=True)
+
+
 @app.route('/downloadAdverse')
 def downloadAdverse():
   path = r"C:\Users\1945686\OneDrive - TCS COM PROD\EHR Rest\Backend\AdverseEffect1.csv"
   return send_file(path, as_attachment=True)
-
 
 
 @app.route("/efficacy")
@@ -74,7 +77,6 @@ def efficacy():
     'gen':gen_dict,
     'sym':symp_dict,
     'quat':quarter_dict,
-
   }
   return data
 
@@ -88,17 +90,15 @@ def adverse():
   data2['OBSERVATION']=data2['OBSERVATION'].str.lower()
   age_dict = av.getAge(data2,data1)
   gen_dict = av.getGender(data2,data1)
-
   symp_dict = av.getSymptoms(data2)
-
 
   data = {
     'age':age_dict,
     'gen':gen_dict,
     'symp':symp_dict,
-
   }
   return data
+
 @app.route('/efficacycount')
 def efficacycount():
   data1 = pd.read_csv('Updated_Main.csv')
@@ -117,6 +117,7 @@ def efficacycount():
     'Overall Vaccine Efficacy (J&J)':efficacy,  
   }
   return data
+
 @app.route('/adversecount')
 def adversecount():
   data1 = pd.read_csv('Updated_Main.csv')
@@ -135,5 +136,7 @@ def adversecount():
     'Adverse Effect Percentage':adversePercent,     
   }
   return data
+
+
 if __name__ == "__main__":
   app.run(debug=True)

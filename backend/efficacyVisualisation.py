@@ -1,4 +1,5 @@
 import regex as re
+
 def isSevere(str):
   severe=['breathing problem','chest pain','breathlessness']
   symList=str.split(', ')
@@ -7,6 +8,7 @@ def isSevere(str):
       if item.lower() in severe:
           severeflag=1
   return severeflag
+
 def getGender(df):
       df['PATIENT_GENDER'] = df['PATIENT_GENDER'].astype(str)
       df['SYMPTOMS'] = df['SYMPTOMS'].astype(str)
