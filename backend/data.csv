@@ -1,0 +1,27 @@
+,CLINIC_NAME,CLINIC_ADDRESS,CLINIC_CONTACT,CLINIC_EMAIL,DOCTOR_NAME,DOCTOR_SSN,DOCTOR_CONTACT,DOCTOR_EMAIL,DATE_OF_VISIT,PATIENT_NAME,PATIENT_DOB,PATIENT_AGE,PATIENT_ADDRESS,PATIENT_CONTACT,PATIENT_EMAIL,PATIENT_SSN,PATIENT_HID,PATIENT_GENDER,SYMPTOMS,OBSERVATION,BLOOD_PRESSURE,PULSE_RATE,SPO2,HEIGHT,WEIGHT,COVID_VACCINE_STATUS,COVID_VACCINE_NAME,DOSE1_ON,DOSE2_ON,BOOSTER_ON,DIAGNOSIS,MEDICINES,LAB_INVESTIGATION,ADVICE,FOLLOW_UP_DATE
+0,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Princetonhospital@phosp.med.us,Jennifer Jones, , , ,29/10/2021,Shelby Johnson, ,91,New York, , ,508838703,13311633934584,"Female
+
+om","Fever, sore throat, cough","Presence of mucus in lungs, regular heart beat",{121/78,—|78,99,170,108,Fully Vaccinated,MODERNA, , , ,Covid +ve,"Paracetamol 650mg after breakfast,lunch and dinner
+fone breakfast
+
+Doxycycline 100mg after breakfast and dinner
+Ivermectin Ding","Haemogram, T3, T4, TSH, Fasting blood sugar, Pulmonary Function Test, Chest X-ray, ECG, Liver function test","Steam inhalation thrice a day, gargle thrice a day, light diet, 14 days home isolation",20/11/2021
+1,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Princetonhospital@phosp.med.us,Jennifer Jones, , , ,29/10/2021,Shelby Johnson, ,91,New York, , ,508838703,13311633934584,"Female
+
+om","Fever, sore throat, cough","Presence of mucus in lungs, regular heart beat",{121/78,—|78,99,170,108,Fully Vaccinated,MODERNA, , , ,Covid +ve,"Paracetamol 650mg after breakfast,lunch and dinner
+fone breakfast
+
+Doxycycline 100mg after breakfast and dinner
+Ivermectin Ding","Haemogram, T3, T4, TSH, Fasting blood sugar, Pulmonary Function Test, Chest X-ray, ECG, Liver function test","Steam inhalation thrice a day, gargle thrice a day, light diet, 14 days home isolation",20/11/2021
+2,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Princetonhospital@phosp.med.us,Sam Brown, , , ,29/10/2021,Selah Ramirez, ,72,New York, , ,362803156,63501195922075,"Female
+
+Problems:",Joint pain,Clear heart beat,{118/74,—|65,94,| 170 |,165,Fully Vaccinated,JANSSEN, , , ,Rheumatic Artheritis,"Aceclofenact+Paracetamol 100mg/325mg after breakfast and dinner 5 days
+Pantoprazole Sodium 40mg ‘before breakfast",X-ray,"Light diet, plenty of fluids intake, 7 days complete rest",20/11/2021
+3,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Princetonhospital@phosp.med.us,Sam Brown, , , ,29/10/2021,Selah Ramirez, ,72,New York, , ,362803156,63501195922075,"Female
+
+Problems:",Joint pain,Clear heart beat,{118/74,—|65,94,| 170 |,165,Fully Vaccinated,JANSSEN, , , ,Rheumatic Artheritis,"Aceclofenact+Paracetamol 100mg/325mg after breakfast and dinner 5 days
+Pantoprazole Sodium 40mg ‘before breakfast",X-ray,"Light diet, plenty of fluids intake, 7 days complete rest",20/11/2021
+4,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Princetonhospital@phosp.med.us,Sam Brown, , , ,29/10/2021,Selah Ramirez, ,72,New York, , ,362803156,63501195922075,"Female
+
+Problems:",Joint pain,Clear heart beat,{118/74,—|65,94,| 170 |,165,Fully Vaccinated,JANSSEN, , , ,Rheumatic Artheritis,"Aceclofenact+Paracetamol 100mg/325mg after breakfast and dinner 5 days
+Pantoprazole Sodium 40mg ‘before breakfast",X-ray,"Light diet, plenty of fluids intake, 7 days complete rest",20/11/2021
