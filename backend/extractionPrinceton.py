@@ -4,10 +4,8 @@ import fitz
 import pytesseract
 import cv2
 import os
-pytesseract.pytesseract.tesseract_cmd=r'C:\Users\1945686\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd=r'tesseract.exe'
 from PIL import Image
-from codecarbon import track_emissions
-from codecarbon import EmissionsTracker
 import re
 
 def convert2BW(img):   
@@ -30,21 +28,13 @@ def pdf2text(file):
     cv2.imwrite('output1.png',bw)
     im=Image.open('output.png')
     im3=Image.open('output1.png')
-    # width, height=im.size
-    # print(width,height)
-    # im1=im.crop((5,500,1150,600))
-    # text2=pytesseract.image_to_string(im1)
 
     BP=im.crop((5,520,310,560))
     height=im.crop((330,520,570,560))
     weight=im.crop((550,520,780,560))
     pulse=im.crop((800,520,980,560))
     spo2=im3.crop((980,520,1150,560))
-    # BP=convert2BW(BP)
-    # height=convert2BW(height)
-    # weight=convert2BW(weight)
-    # pulse=convert2BW(pulse)
-    # spo2=convert2BW(spo2)
+  
     BP=pytesseract.image_to_string(BP)
     height=pytesseract.image_to_string(height)
     weight=pytesseract.image_to_string(weight)

@@ -4,7 +4,7 @@ import re
 
 # DATA CLEANING
 def filterdata():
-    data=pd.read_csv('data.csv')
+    data=pd.read_csv('/Uploader_Folder/extracted_data.csv')
     data['PULSE_RATE'] = data['PULSE_RATE'].astype(str)
     for i in range(len(data)):
         pulse=data.loc[i,'PULSE_RATE']
@@ -56,7 +56,7 @@ def filterdata():
     result=data.drop(['Unnamed: 0','CLINIC_CONTACT','CLINIC_NAME','CLINIC_ADDRESS','PATIENT_NAME','PATIENT_DOB','CLINIC_EMAIL','DOCTOR_NAME','DOCTOR_SSN','DOCTOR_CONTACT','DOCTOR_EMAIL','PATIENT_CONTACT'
     ,'PATIENT_EMAIL','PATIENT_SSN','PATIENT_HID','DOSE2_ON','BOOSTER_ON','MEDICINES','LAB_INVESTIGATION','ADVICE'],axis=1)
     coviddf=result[result['COVID_VACCINE_NAME']=='JANSSEN']
-    coviddf.to_csv('CovidData.csv')
+    coviddf.to_csv('/Uploader_Folder/Filtered_Data.csv')
     return coviddf.to_dict()
 
 def search(column):
@@ -68,7 +68,7 @@ def search(column):
         return False
 
 def adverseEffect():
-    df=pd.read_csv('CovidData.csv')
+    df=pd.read_csv('/Uploader_Folder/Filtered_Data.csv')
     df=df.drop(['Unnamed: 0'],axis=1)
     df['SYMPTOMS'] = df['SYMPTOMS'].astype(str)
     df['OBSERVATION'] = df['OBSERVATION'].astype(str)
@@ -80,11 +80,11 @@ def adverseEffect():
         if(search(observation) or search(symptoms)):
             df2 = df2.append(df.iloc[i])
     
-    df2.to_csv('AdverseEffect.csv')
+    df2.to_csv('/Uploader_Folder/AdverseEffect.csv')
     return df2.to_dict()
 
 def efficacy():
-    data=pd.read_csv('Updated_Main.csv')
+    data=pd.read_csv('/Uploader_Folder/extracted_data.csv')
     df=data.drop(['Unnamed: 0'],axis=1)
     covid_count=len(df[df['DIAGNOSIS'] == 'COVID +VE'])
     total_count=len(df)
