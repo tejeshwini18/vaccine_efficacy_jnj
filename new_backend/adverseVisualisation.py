@@ -5,9 +5,28 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import io
 import base64
+import os
 
-# Read data
-df = pd.read_csv('Upload_Folder/extracted_data.csv')
+def read_csv_safely(file_path):
+    try:
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"File not found: {file_path}")
+            
+        df = pd.read_csv(file_path)
+        if df.empty:
+            raise ValueError(f"CSV file is empty: {file_path}")
+            
+        return df
+    except Exception as e:
+        print(f"Error reading CSV file {file_path}: {str(e)}")
+        raise
+
+# Read the CSV file
+try:
+    df = read_csv_safely('Upload_Folder/extracted_data.csv')
+except Exception as e:
+    print(f"Failed to read extracted_data.csv: {str(e)}")
+    df = pd.DataFrame()  # Create empty DataFrame as fallback
 
 def isSevere(symptom_str):
     severe = ['breathing problem', 'chest pain', 'breathlessness']
@@ -15,22 +34,25 @@ def isSevere(symptom_str):
     return any(item.lower() in severe for item in sym_list)
 
 def getGender(df, df2):
-    df['PATIENT_GENDER'] = df['PATIENT_GENDER'].astype(str)
-    df2['PATIENT_GENDER'] = df2['PATIENT_GENDER'].astype(str)
+    # For df (Filtered_Data.csv)
+    df['GENDER'] = df['GENDER'].astype(str)
     df['SYMPTOMS'] = df['SYMPTOMS'].astype(str)
+    
+    # For df2 (extracted_data.csv)
+    df2['GENDER'] = df2['GENDER'].astype(str)
     
     M = [0, 0, 0]
     F = [0, 0, 0]
 
     for i in range(len(df2)):
-        gen = df2.loc[i, 'PATIENT_GENDER']
+        gen = df2.loc[i, 'GENDER']
         if gen == 'M':
             M[2] += 1
         elif gen == 'F':
             F[2] += 1
 
     for i in range(len(df)):
-        gen = df.loc[i, 'PATIENT_GENDER']
+        gen = df.loc[i, 'GENDER']
         sym = df.loc[i, 'SYMPTOMS']
         severeflag = isSevere(sym)
 
@@ -44,9 +66,12 @@ def getGender(df, df2):
     return {'M': M, 'F': F}
 
 def getAge(df, df2):
+    # For df (Updated_Main.csv)
     df['PATIENT_AGE'] = df['PATIENT_AGE'].astype(int)
-    df2['PATIENT_AGE'] = df2['PATIENT_AGE'].astype(int)
     df['SYMPTOMS'] = df['SYMPTOMS'].astype(str)
+    
+    # For df2 (AdverseEffect.csv)
+    df2['PATIENT_AGE'] = df2['PATIENT_AGE'].astype(int)
 
     age_ranges = {
         '18-30': [0, 0, 0],

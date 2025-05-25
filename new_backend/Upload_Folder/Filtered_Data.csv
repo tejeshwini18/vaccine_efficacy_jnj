@@ -1,41 +1,347 @@
-,Clinic Name,Clinic Address,Clinic Contact,Doctor Name,Date of Visit,Patient Name,Patient Age,Symptoms,Blood Pressure,Height,Weight,Pulse Rate,SPO2,Diagnosis,Medicines,Follow Up Date
-0,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Jennifer Jones,29/10/2021,Shelby Johnson,91,"Fever, sore throat, cough","Blood Pressure 121/78
-",,"Weight 108
-",,,Covid +ve,"Paracetamol 650mg after breakfast,lunch and dinner
+FULL_TEXT,BLOOD_PRESSURE,HEIGHT,WEIGHT,PULSE_RATE,SPO2,GENDER,PATIENT_AGE,SYMPTOMS
+"Princeton Hospital
 
-Doxycycline 100mg after breakfast and dinner",20/11/2021
-1,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Jennifer Jones,29/10/2021,Shelby Johnson,91,"Fever, sore throat, cough","Blood Pressure 121/78
-",,"Weight 108
-",,,Covid +ve,"Paracetamol 650mg after breakfast,lunch and dinner
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
 
-Doxycycline 100mg after breakfast and dinner",20/11/2021
-2,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Jennifer Jones,29/10/2021,Ivory Carter,78,Stomach pain,"Blood Pressure 121/78
-",,"Weight 174
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
-3,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Jennifer Jones,29/10/2021,Ivory Carter,78,Stomach pain,"Blood Pressure 121/78
-",,"Weight 174
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
-4,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Jennifer Jones,29/10/2021,Ivory Carter,78,Stomach pain,"Blood Pressure 121/78
-",,"Weight 174
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
-5,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Matt Smith,29/10/2021,Nalani Nelson,71,Stomach pain,"Blood Pressure 121/78
-",,"Weight
+Date of visit-29/10/2021
 
-165
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
-6,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Matt Smith,29/10/2021,Nalani Nelson,71,Stomach pain,"Blood Pressure 121/78
-",,"Weight
+SSN-508838703 Health ID-13311633934584
+Patient Name-Shelby Johnson Address-New York
+Age-91 Gender-Female
 
-165
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
-7,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Matt Smith,29/10/2021,Nalani Nelson,71,Stomach pain,"Blood Pressure 121/78
-",,"Weight
+om pe pe he Ph P|
 
-165
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
-8,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Ann Johnson,29/10/2021,Reyna Baker,95,Stomach pain,"Blood Pressure 121/78
-",,"Weight 157
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
-9,Princeton Hospital,25 Plainsboro Rd. Princeton NJ 08540,+1 999-000-1111,Ann Johnson,29/10/2021,Reyna Baker,95,Stomach pain,"Blood Pressure 121/78
-",,"Weight 157
-",,,Indigestion,Pantoprazole Sodium 40mg,20/11/2021
+Problems: Fever, sore throat, cough
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+
+Presence of mucus in lungs, regular heart beat
+
+Diagnosis-
+
+Covid +ve
+
+Medicines Frequency & Doses Duration
+
+Paracetamol 650mg after breakfast,lunch and dinner
+
+Doxycycline 100mg after breakfast and dinner
+
+Suggested Investigation-
+
+Haemogram, T3, T4, TSH, Fasting blood sugar, Pulmonary Function Test, Chest X-ray, ECG, Liver function test
+
+Advice-
+
+Steam inhalation thrice a day, gargle thrice a day, light diet, 14 days home isolation
+
+Doctor's Name- Jennifer Jones Next Visit Date- 20/11/2021
+",121/78,170,108.0,78.0,,M,91,"Fever, sore throat, cough"
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-508838703 Health ID-13311633934584
+Patient Name-Shelby Johnson Address-New York
+Age-91 Gender-Female
+
+om pe pe he Ph P|
+
+Problems: Fever, sore throat, cough
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+
+Presence of mucus in lungs, regular heart beat
+
+Diagnosis-
+
+Covid +ve
+
+Medicines Frequency & Doses Duration
+
+Paracetamol 650mg after breakfast,lunch and dinner
+
+Doxycycline 100mg after breakfast and dinner
+
+Suggested Investigation-
+
+Haemogram, T3, T4, TSH, Fasting blood sugar, Pulmonary Function Test, Chest X-ray, ECG, Liver function test
+
+Advice-
+
+Steam inhalation thrice a day, gargle thrice a day, light diet, 14 days home isolation
+
+Doctor's Name- Jennifer Jones Next Visit Date- 20/11/2021
+",121/78,170,108.0,78.0,,M,91,"Fever, sore throat, cough"
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-795086954 Health ID-52537952235059
+Patient Name-Ivory Carter Address-New York
+Age-78 Gender-Female
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Jennifer Jones Next Visit Date- 20/11/2021
+",121/78,170,,96.0,,M,78,Stomach pain
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-795086954 Health ID-52537952235059
+Patient Name-Ivory Carter Address-New York
+Age-78 Gender-Female
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Jennifer Jones Next Visit Date- 20/11/2021
+",121/78,170,,96.0,,M,78,Stomach pain
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-795086954 Health ID-52537952235059
+Patient Name-Ivory Carter Address-New York
+Age-78 Gender-Female
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Jennifer Jones Next Visit Date- 20/11/2021
+",121/78,170,,96.0,,M,78,Stomach pain
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-652176724 Health ID-3917901571964
+Patient Name-Nalani Nelson Address-New York
+Age-71 Gender-Female
+
+om pe ee he le fe bP]
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Matt Smith Next Visit Date- 20/11/2021
+",121/78,170,,,,M,71,Stomach pain
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-652176724 Health ID-3917901571964
+Patient Name-Nalani Nelson Address-New York
+Age-71 Gender-Female
+
+om pe ee he le fe bP]
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Matt Smith Next Visit Date- 20/11/2021
+",121/78,170,,,,M,71,Stomach pain
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-652176724 Health ID-3917901571964
+Patient Name-Nalani Nelson Address-New York
+Age-71 Gender-Female
+
+om pe ee he le fe bP]
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Matt Smith Next Visit Date- 20/11/2021
+",121/78,170,,,,M,71,Stomach pain
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-554909 117 Health ID-54962284397657
+Patient Name-Reyna Baker Address-New York
+Age-95 Gender-Female
+
+mom pe we hel f= pb P|
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Ann Johnson Next Visit Date- 20/11/2021
+",121/78,170,,93.0,,M,95,Stomach pain
+"Princeton Hospital
+
+Address:25 Plainsboro Rd. Princeton NJ 08540 Phone:+1 999-000-1111 Email:Princetonhospital@phosp.med.us
+
+Date of visit-29/10/2021
+
+SSN-554909 117 Health ID-54962284397657
+Patient Name-Reyna Baker Address-New York
+Age-95 Gender-Female
+
+mom pe we hel f= pb P|
+
+Problems: Stomach pain
+
+Vaccination Name- Covid Vaccination Status:
+MODERNA Fully Vaccinated
+Observation-
+Clear heart beat
+Diagnosis-
+Indigestion
+Medicines Frequency & Doses Duration
+
+Pantoprazole Sodium 40mg
+
+Suggested Investigation-
+
+Liver Function Test, USG Whole Abdomen.
+
+Advice-
+
+Light diet, plenty of fluids intake
+
+Doctor's Name- Ann Johnson Next Visit Date- 20/11/2021
+",121/78,170,,93.0,,M,95,Stomach pain

@@ -5,125 +5,241 @@ import pytesseract
 import cv2
 import zipfile
 from PIL import Image
+import shutil
+import time
+import re
 
 # Tesseract installation path (ensure this path is correct for your system)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-# Function to convert image to black and white
+# Create Upload_Folder if it doesn't exist
+UPLOAD_FOLDER = './Upload_Folder'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Output folder for cropped images debug
+DEBUG_IMAGE_DIR = os.path.join(UPLOAD_FOLDER, 'debug_images')
+os.makedirs(DEBUG_IMAGE_DIR, exist_ok=True)
+
+def search(column):
+    # More flexible pattern that looks for any mention of adverse effects related to covid vaccine
+    pattern = r'.*(adverse|side|negative|complication|observed|-ve).*(covid|vaccine|vaccination)'
+    try:
+        res = re.search(pattern, str(column).lower())
+        return bool(res)
+    except Exception as e:
+        print(f"Error in search function: {e}")
+        return False
+
 def convert_to_bw(img):
+    """Convert image to black and white using adaptive thresholding."""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, bw = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+    bw = cv2.adaptiveThreshold(
+        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     return bw
 
-# Function to extract text and important values from a PDF
+def clean_extracted_text(text, field_type=''):
+    """Clean extracted OCR text based on field type."""
+    text = text.replace('|', '').replace('—', '').replace(' ', '').replace('\n', '')
+    if field_type == 'bp':
+        # Allow digits and forward slash
+        text = ''.join(c for c in text if c.isdigit() or c == '/')
+        # Add slash if missing but length looks like BP (e.g. 12078 -> 120/78)
+        if '/' not in text and len(text) >= 5:
+            text = text[:3] + '/' + text[3:]
+    elif field_type in ['height', 'weight', 'pulse', 'spo2', 'age']:
+        text = ''.join(c for c in text if c.isdigit())
+    return text.strip()
+
+def extract_field(image, coords, field_name, field_type=''):
+    """
+    Crop a region from image, preprocess it, save debug image, and extract text.
+    coords: (x1, y1, x2, y2)
+    """
+    x1, y1, x2, y2 = coords
+    cropped = image[y1:y2, x1:x2]
+
+    bw_image = convert_to_bw(cropped)
+
+    # Dilate to improve OCR
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
+    bw_image = cv2.dilate(bw_image, kernel, iterations=1)
+
+    # Save cropped image for debugging
+    debug_path = os.path.join(DEBUG_IMAGE_DIR, f"{field_name}.png")
+    cv2.imwrite(debug_path, bw_image)
+
+    # Tesseract config for single line recognition
+    custom_config = r'--oem 3 --psm 7'
+    text = pytesseract.image_to_string(bw_image, config=custom_config)
+
+    cleaned_text = clean_extracted_text(text, field_type)
+    return cleaned_text
+
 def extract_data_from_pdf(file_path):
-    # Open the PDF file
-    doc = fitz.open(file_path)
-    page = doc.load_page(0)  # Load the first page
-    pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0))
-    
-    # Save the page as an image
-    img_path = 'output.png'
-    pix.save(img_path)
+    """Extract required data fields from a single PDF file."""
+    doc = None
+    try:
+        print(f"Starting PDF extraction for: {file_path}")
+        doc = fitz.open(file_path)
+        page = doc.load_page(0)  # First page
+        pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0))
+        
+        img_path = os.path.join(UPLOAD_FOLDER, 'output.png')
+        pix.save(img_path)
 
-    # Read the image using OpenCV
-    img = cv2.imread(img_path)
-    text = pytesseract.image_to_string(img)
+        img = cv2.imread(img_path)
+        if img is None:
+            raise Exception(f"Failed to read image from {img_path}")
 
-    # Example of extracting specific fields using image cropping
-    bp_image = img[520:560, 5:310]      # Crop the image to get the BP value
-    height_image = img[520:560, 330:570]
-    weight_image = img[520:560, 550:780]
-    pulse_image = img[520:560, 800:980]
-    spo2_image = img[520:560, 980:1150]
+        # Define all regions to crop (x1, y1, x2, y2)
+        regions = {
+            'bp': (185, 520, 270, 560),
+            'height': (480, 520, 595, 560),
+            'weight': (710, 520, 780, 560),
+            'pulse': (925, 520, 980, 560),
+            'spo2': (1080, 520, 1170, 560),
+            'gender': (680, 400, 900, 480),
+            'age': (70, 400, 180, 450),
+            'symptoms': (110, 600, 300, 650),
+        }
 
-    # Convert to black and white for better OCR accuracy on certain sections
-    bp_image_bw = convert_to_bw(bp_image)
-    spo2_image_bw = convert_to_bw(spo2_image)
+        # Extract fields via OCR
+        extracted = {}
+        for field, coords in regions.items():
+            # 'gender' is free text, others cleaned numerics except bp has slash
+            field_type = 'gender' if field == 'gender' else field
+            extracted[field] = extract_field(img, coords, field, field_type)
 
-    # Extract text from cropped images
-    bp = pytesseract.image_to_string(bp_image)
-    height = pytesseract.image_to_string(height_image)
-    weight = pytesseract.image_to_string(weight_image)
-    pulse = pytesseract.image_to_string(pulse_image)
-    spo2 = pytesseract.image_to_string(spo2_image_bw)
+        # Gender cleanup: normalize
+        gender = extracted.get('gender', '').lower()
+        if 'male' in gender or gender == 'm':
+            extracted['gender'] = 'M'
+        elif 'female' in gender or gender == 'f':
+            extracted['gender'] = 'F'
+        else:
+            # fallback: try extracting gender from full text below
+            extracted['gender'] = ''
 
-    return text, bp, height, weight, pulse, spo2
+        # Extract full text for other structured fields
+        full_text = pytesseract.image_to_string(img)
 
-# Function to extract structured data from OCR text
-def extract_structured_data(text, bp, height, weight, pulse, spo2):
-    def between(value, a, b):
-        pos_a = value.find(a)
-        if pos_a == -1: return ""
-        pos_b = value.rfind(b)
-        if pos_b == -1: return ""
-        adjusted_pos_a = pos_a + len(a)
-        if adjusted_pos_a >= pos_b: return ""
-        return value[adjusted_pos_a:pos_b].strip()
+        # Helper to extract between two strings from full text
+        def between(value, a, b):
+            pos_a = value.find(a)
+            if pos_a == -1: return ""
+            pos_b = value.find(b, pos_a + len(a)) if b else len(value)
+            if pos_b == -1: pos_b = len(value)
+            adjusted_pos_a = pos_a + len(a)
+            if adjusted_pos_a >= pos_b: return ""
+            return value[adjusted_pos_a:pos_b].strip()
 
-    # Extract relevant fields
-    data = {
-        'Clinic Name': 'Princeton Hospital',
-        'Clinic Address': between(text, "Address:", "Phone"),
-        'Clinic Contact': between(text, "Phone:", "Email"),
-        'Doctor Name': between(text, "Doctor's Name-", "Next"),
-        'Date of Visit': between(text, "Date of visit-", "SSN"),
-        'Patient Name': between(text, "Patient Name-", "Address"),
-        'Patient Age': between(text, "Age-", "Gender"),
-        'Symptoms': between(text, "Problems:", "Vaccination Name"),
-        'Blood Pressure': bp,
-        'Height': height,
-        'Weight': weight,
-        'Pulse Rate': pulse,
-        'SPO2': spo2,
-        'Diagnosis': between(text, "Diagnosis-", "Medicines"),
-        'Medicines': between(text, "Duration", "Suggested"),
-        'Follow Up Date': between(text, "Next Visit Date-", ""),
-    }
+        # Extract other structured fields
+        data = {
+            'CLINIC_NAME': 'Princeton Hospital',
+            'CLINIC_ADDRESS': between(full_text, "Address:", "Phone"),
+            'CLINIC_CONTACT': between(full_text, "Phone:", "Email"),
+            'DOCTOR_NAME': between(full_text, "Doctor's Name-", "Next"),
+            'DATE_OF_VISIT': between(full_text, "Date of visit-", "SSN"),
+            'PATIENT_NAME': between(full_text, "Patient Name-", "Address"),
+            'PATIENT_AGE': extracted.get('age') or between(full_text, "Age-", "Gender"),
+            'GENDER': extracted['gender'] or between(full_text, "Gender-", "Symptoms"),
+            'SYMPTOMS': between(full_text, "Problems:", "Vaccination Name"),
+            'BLOOD_PRESSURE': extracted['bp'],
+            'HEIGHT': extracted['height'],
+            'WEIGHT': extracted['weight'],
+            'PULSE_RATE': extracted['pulse'],
+            'SPO2': extracted['spo2'],
+            'DIAGNOSIS': between(full_text, "Diagnosis-", "Medicines"),
+            'MEDICINES': between(full_text, "Duration", "Suggested"),
+            'FOLLOW_UP_DATE': between(full_text, "Next Visit Date-", ""),
+        }
 
-    return data
+        # Standardize gender
+        g = data['GENDER'].strip().upper()
+        if 'MALE' in g or g == 'M':
+            data['GENDER'] = 'M'
+        elif 'FEMALE' in g or g == 'F':
+            data['GENDER'] = 'F'
+        else:
+            data['GENDER'] = ''
 
-# Function to process the extracted files and store data in a CSV
+        print(f"Extracted Data from {os.path.basename(file_path)}:\n{data}")
+
+        return full_text, data['BLOOD_PRESSURE'], data['HEIGHT'], data['WEIGHT'], \
+               data['PULSE_RATE'], data['SPO2'], data['GENDER'], data['PATIENT_AGE'],data['SYMPTOMS']
+
+    except Exception as e:
+        print(f"Error in extract_data_from_pdf: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
+        raise
+    finally:
+        if doc:
+            doc.close()
+
 def process_uploaded_files(zip_file_path):
-    extraction_folder = './Upload_Folder/'
-    
-    # Extract files from the uploaded zip
-    with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-        zip_ref.extractall(extraction_folder)
+    """Extract data from all PDFs inside a ZIP file and save to CSV."""
+    temp_dir = None
+    try:
+        if not os.path.exists(zip_file_path):
+            raise FileNotFoundError(f"ZIP file not found: {zip_file_path}")
 
-    # List all the files in the dataset folder
-    files = os.listdir(extraction_folder)
+        print(f"Processing zip file: {zip_file_path}")
 
-    # Initialize DataFrame to store extracted data
-    df = pd.DataFrame(columns=[
-        'Clinic Name', 'Clinic Address', 'Clinic Contact', 'Doctor Name', 'Date of Visit', 
-        'Patient Name', 'Patient Age', 'Symptoms', 'Blood Pressure', 'Height', 'Weight', 
-        'Pulse Rate', 'SPO2', 'Diagnosis', 'Medicines', 'Follow Up Date'
-    ])
+        with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+            print("\nContents of ZIP file:")
+            for file_info in zip_ref.infolist():
+                print(f"- {file_info.filename}")
 
-    # List to collect extracted data
-    extracted_data_list = []
+            temp_dir = os.path.join(UPLOAD_FOLDER, 'temp_extract')
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+            os.makedirs(temp_dir)
 
-    # Iterate through each file and extract data
-    for i, file in enumerate(files):
-        file_path = os.path.join(extraction_folder, file)
-        if file.endswith('.pdf'):  # Process only PDF files
+            zip_ref.extractall(temp_dir)
+            print(f"Extracted files to: {temp_dir}")
+
+        def find_pdf_files(directory):
+            pdfs = []
+            for root, _, files in os.walk(directory):
+                for file in files:
+                    if file.lower().endswith('.pdf'):
+                        pdfs.append(os.path.join(root, file))
+            return pdfs
+
+        pdf_files = find_pdf_files(temp_dir)
+        print(f"Found {len(pdf_files)} PDF files.")
+
+        if not pdf_files:
+            raise Exception("No PDF files found in the uploaded")
+        results = []
+        for pdf_file in pdf_files:
             try:
-                text, bp, height, weight, pulse, spo2 = extract_data_from_pdf(file_path)
-                extracted_data = extract_structured_data(text, bp, height, weight, pulse, spo2)
-                
-                # Append extracted data to the list
-                extracted_data_list.append(extracted_data)
-                print(f"Extracted data from {file}")
-
+                extracted = extract_data_from_pdf(pdf_file)
+                results.append(extracted)
             except Exception as e:
-                print(f"Error extracting data from {file}: {e}")
+                print(f"Error processing {pdf_file}: {e}")
+        
+        # Save results to CSV
+        df = pd.DataFrame(results, columns=[
+            "FULL_TEXT", "BLOOD_PRESSURE", "HEIGHT", "WEIGHT",
+            "PULSE_RATE", "SPO2", "GENDER", "PATIENT_AGE", "SYMPTOMS"
+        ])
 
-    # Convert list of dicts to DataFrame
-    df = pd.DataFrame(extracted_data_list)
+        extracted_csv_path = os.path.join(UPLOAD_FOLDER, "extracted_data.csv")
 
-    # Save extracted data to CSV
-    output_csv = './Upload_Folder/extracted_data.csv'
-    df.to_csv(output_csv, index=False)
-    print(f"Data extraction complete. CSV saved at {output_csv}")
-    return output_csv
+        # Create a new DataFrame with only SYMPTOMS column
+        df_symptoms = df[['SYMPTOMS']].copy()
+        # Save the filtered data
+        df_symptoms.to_csv(os.path.join(UPLOAD_FOLDER, 'AdverseEffect.csv'), index=False)
+        print(f"Adverse effects data saved to: {os.path.join(UPLOAD_FOLDER, 'AdverseEffect.csv')}")
+        
+        df.to_csv(extracted_csv_path, index=False)
+
+        print(f"Data saved to: {extracted_csv_path}")
+
+    except Exception as e:
+        print(f"Error in process_uploaded_files: {e}")
+    finally:
+        if temp_dir and os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
