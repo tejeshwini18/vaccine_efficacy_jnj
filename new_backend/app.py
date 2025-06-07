@@ -111,27 +111,28 @@ def downloadFiltered():
 @app.route('/downloadAdverse')
 def downloadAdverse():
     try:
-        # First check if Filtered_Data.csv exists
-        filtered_path = os.path.join(UPLOAD_FOLDER, "Filtered_Data.csv")
-        if not os.path.exists(filtered_path):
-            return jsonify({'error': 'No filtered data available. Please upload and process the ZIP file first.'}), 404
-
-        # Generate adverse effects data
-        ev.adverseEffect()
-        
-        # Check if adverse effects data was created
+        # Check if adverse effects data exists
         adverse_path = os.path.join(UPLOAD_FOLDER, "AdverseEffect.csv")
+        print(f"Checking for adverse effects file at: {adverse_path}")
+        
         if not os.path.exists(adverse_path):
-            return jsonify({'error': 'Failed to generate adverse effects data. Please try again.'}), 500
+            print("Adverse effects file not found")
+            return jsonify({'error': 'No adverse effects data available. Please upload and process the ZIP file first.'}), 404
 
         # Verify the file has content
         df = pd.read_csv(adverse_path)
+        print(f"Found {len(df)} records in adverse effects file")
+        
         if df.empty:
+            print("Adverse effects file is empty")
             return jsonify({'error': 'No adverse effects found in the data.'}), 404
             
+        print("Sending adverse effects file for download")
         return send_file(adverse_path, as_attachment=True, download_name="AdverseEffect.csv")
     except Exception as e:
         print(f"Error in downloadAdverse: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
         return jsonify({'error': f'Error downloading adverse effects data: {str(e)}'}), 500
 
 @app.route("/efficacy")

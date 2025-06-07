@@ -21,11 +21,40 @@ DEBUG_IMAGE_DIR = os.path.join(UPLOAD_FOLDER, 'debug_images')
 os.makedirs(DEBUG_IMAGE_DIR, exist_ok=True)
 
 def search(column):
-    # More flexible pattern that looks for any mention of adverse effects related to covid vaccine
-    pattern = r'.*(adverse|side|negative|complication|observed|-ve).*(covid|vaccine|vaccination)'
+    # List of common vaccine-related symptoms
+    vaccine_symptoms = [
+        'fever', 'headache', 'fatigue', 'muscle pain', 'chills', 'nausea',
+        'vomiting', 'diarrhea', 'stomach pain', 'sore throat', 'cough',
+        'shortness of breath', 'chest pain', 'dizziness', 'rash', 'swelling',
+        'joint pain', 'body ache', 'loss of appetite', 'sleepiness'
+    ]
+    
     try:
-        res = re.search(pattern, str(column).lower())
-        return bool(res)
+        text = str(column).lower()
+        print(f"\nSearching in text: {text}")
+        
+        # Check if any vaccine-related symptoms are present
+        symptoms_found = [symptom for symptom in vaccine_symptoms if symptom in text]
+        if symptoms_found:
+            print(f"Found vaccine-related symptoms: {symptoms_found}")
+            return True
+            
+        # Also check for explicit mentions of vaccine-related issues
+        patterns = [
+            r'.*(adverse|side|negative|complication|observed|-ve|effect).*(covid|vaccine|vaccination|vax)',
+            r'.*(covid|vaccine|vaccination|vax).*(adverse|side|negative|complication|observed|-ve|effect)',
+            r'.*(post.*vaccine|post.*vax|post.*covid).*(symptom|effect|reaction)',
+            r'.*(symptom|effect|reaction).*(post.*vaccine|post.*vax|post.*covid)'
+        ]
+        
+        for pattern in patterns:
+            res = re.search(pattern, text)
+            if res:
+                print(f"Match found with pattern: {pattern}")
+                return True
+                
+        print("No matches found")
+        return False
     except Exception as e:
         print(f"Error in search function: {e}")
         return False
@@ -79,7 +108,7 @@ def extract_data_from_pdf(file_path):
     """Extract required data fields from a single PDF file."""
     doc = None
     try:
-        print(f"Starting PDF extraction for: {file_path}")
+        print(f"\nStarting PDF extraction for: {file_path}")
         doc = fitz.open(file_path)
         page = doc.load_page(0)  # First page
         pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0))
@@ -110,18 +139,10 @@ def extract_data_from_pdf(file_path):
             field_type = 'gender' if field == 'gender' else field
             extracted[field] = extract_field(img, coords, field, field_type)
 
-        # Gender cleanup: normalize
-        gender = extracted.get('gender', '').lower()
-        if 'male' in gender or gender == 'm':
-            extracted['gender'] = 'M'
-        elif 'female' in gender or gender == 'f':
-            extracted['gender'] = 'F'
-        else:
-            # fallback: try extracting gender from full text below
-            extracted['gender'] = ''
-
         # Extract full text for other structured fields
         full_text = pytesseract.image_to_string(img)
+        print(f"\nExtracted full text from PDF:")
+        print(full_text)
 
         # Helper to extract between two strings from full text
         def between(value, a, b):
@@ -143,7 +164,7 @@ def extract_data_from_pdf(file_path):
             'PATIENT_NAME': between(full_text, "Patient Name-", "Address"),
             'PATIENT_AGE': extracted.get('age') or between(full_text, "Age-", "Gender"),
             'GENDER': extracted['gender'] or between(full_text, "Gender-", "Symptoms"),
-            'SYMPTOMS': between(full_text, "Problems:", "Vaccination Name"),
+            'SYMPTOMS': between(full_text, "Problems:", "Vaccination Name") or extracted.get('symptoms', ''),
             'BLOOD_PRESSURE': extracted['bp'],
             'HEIGHT': extracted['height'],
             'WEIGHT': extracted['weight'],
@@ -153,6 +174,9 @@ def extract_data_from_pdf(file_path):
             'MEDICINES': between(full_text, "Duration", "Suggested"),
             'FOLLOW_UP_DATE': between(full_text, "Next Visit Date-", ""),
         }
+
+        # Print extracted symptoms for debugging
+        print(f"\nExtracted symptoms: {data['SYMPTOMS']}")
 
         # Standardize gender
         g = data['GENDER'].strip().upper()
@@ -166,7 +190,7 @@ def extract_data_from_pdf(file_path):
         print(f"Extracted Data from {os.path.basename(file_path)}:\n{data}")
 
         return full_text, data['BLOOD_PRESSURE'], data['HEIGHT'], data['WEIGHT'], \
-               data['PULSE_RATE'], data['SPO2'], data['GENDER'], data['PATIENT_AGE'],data['SYMPTOMS']
+               data['PULSE_RATE'], data['SPO2'], data['GENDER'], data['PATIENT_AGE'], data['SYMPTOMS']
 
     except Exception as e:
         print(f"Error in extract_data_from_pdf: {str(e)}")
@@ -211,7 +235,8 @@ def process_uploaded_files(zip_file_path):
         print(f"Found {len(pdf_files)} PDF files.")
 
         if not pdf_files:
-            raise Exception("No PDF files found in the uploaded")
+            raise Exception("No PDF files found in the uploaded ZIP")
+            
         results = []
         for pdf_file in pdf_files:
             try:
@@ -226,20 +251,38 @@ def process_uploaded_files(zip_file_path):
             "PULSE_RATE", "SPO2", "GENDER", "PATIENT_AGE", "SYMPTOMS"
         ])
 
-        extracted_csv_path = os.path.join(UPLOAD_FOLDER, "extracted_data.csv")
-
-        # Create a new DataFrame with only SYMPTOMS column
-        df_symptoms = df[['SYMPTOMS']].copy()
-        # Save the filtered data
-        df_symptoms.to_csv(os.path.join(UPLOAD_FOLDER, 'AdverseEffect.csv'), index=False)
-        print(f"Adverse effects data saved to: {os.path.join(UPLOAD_FOLDER, 'AdverseEffect.csv')}")
+        # Print sample of symptoms for debugging
+        print("\nSample of symptoms found:")
+        print(df['SYMPTOMS'].head())
         
+        # Save the complete extracted data
+        extracted_csv_path = os.path.join(UPLOAD_FOLDER, "extracted_data.csv")
         df.to_csv(extracted_csv_path, index=False)
+        print(f"Complete data saved to: {extracted_csv_path}")
+        
+        # Create and save adverse effects data
+        print("\nFiltering for adverse effects...")
+        df_adverse = df[df['SYMPTOMS'].apply(lambda x: search(str(x)))]
+        print(f"Found {len(df_adverse)} records with adverse effects")
+        
+        if len(df_adverse) > 0:
+            print("\nSample of adverse effects found:")
+            print(df_adverse['SYMPTOMS'].head())
+        
+        adverse_path = os.path.join(UPLOAD_FOLDER, 'AdverseEffect.csv')
+        df_adverse.to_csv(adverse_path, index=False)
+        print(f"Adverse effects data saved to: {adverse_path}")
+        
+        # Create and save filtered data (copy of extracted data for now)
+        filtered_path = os.path.join(UPLOAD_FOLDER, 'Filtered_Data.csv')
+        df.to_csv(filtered_path, index=False)
+        print(f"Filtered data saved to: {filtered_path}")
 
-        print(f"Data saved to: {extracted_csv_path}")
+        return extracted_csv_path
 
     except Exception as e:
         print(f"Error in process_uploaded_files: {e}")
+        raise
     finally:
         if temp_dir and os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
