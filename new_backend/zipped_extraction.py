@@ -9,8 +9,11 @@ import shutil
 import time
 import re
 
-# Tesseract installation path (ensure this path is correct for your system)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Set Tesseract path based on environment
+if os.name == 'nt':  # Windows
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+else:  # Linux (Heroku)
+    pytesseract.pytesseract.tesseract_cmd = '/app/.apt/usr/bin/tesseract'
 
 # Create Upload_Folder if it doesn't exist
 UPLOAD_FOLDER = './Upload_Folder'
