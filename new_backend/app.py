@@ -279,7 +279,7 @@ def upload_file():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             try:
-                process_uploaded_files(filepath)
+                zipped_extraction.process_uploaded_files(filepath)
                 flash('File processed successfully!')
             except Exception as e:
                 flash(f'Error processing file: {str(e)}')
