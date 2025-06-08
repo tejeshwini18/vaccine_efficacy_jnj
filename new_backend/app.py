@@ -2,10 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, send_file,
 import zipfile
 from werkzeug.utils import secure_filename
 import os
-import zipped_extraction as zipped_extraction
-import analysis
-import adverseVisualisation as av
-import efficacyVisualisation as ev
+from new_backend import zipped_extraction
+from new_backend import analysis
+from new_backend import adverseVisualisation as av
+from new_backend import efficacyVisualisation as ev
 import pandas as pd
 from flask_cors import CORS
 
