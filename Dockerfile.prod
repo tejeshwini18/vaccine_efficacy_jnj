@@ -1,4 +1,4 @@
-# Use Python 3.9 as base image
+# Use Python 3.9 slim as base image
 FROM python:3.9-slim
 
 # Install system dependencies including Tesseract OCR
@@ -26,9 +26,12 @@ RUN mkdir -p Upload_Folder/debug_images Upload_Folder/temp_extract
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV TESSERACT_CMD=/usr/bin/tesseract
+ENV FLASK_ENV=production
+ENV FLASK_APP=new_backend/app.py
 
 # Expose port for the web server
-EXPOSE 8000
+EXPOSE $PORT
 
-# Command to run the application
-CMD ["python", "new_backend/app.py"] 
+# Use gunicorn for production
+RUN pip install gunicorn
+CMD gunicorn --bind 0.0.0.0:$PORT new_backend.app:app 

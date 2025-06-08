@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaccine-efficacy-app
+  labels:
+    app: vaccine-efficacy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vaccine-efficacy
+  template:
+    metadata:
+      labels:
+        app: vaccine-efficacy
+    spec:
+      containers:
+      - name: vaccine-efficacy
+        image: gcr.io/vaccine-efficacy-jnj/vaccine-efficacy-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: upload-folder
+          mountPath: /app/Upload_Folder
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: upload-folder
+        persistentVolumeClaim:
+          claimName: upload-folder-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vaccine-efficacy-service
+spec:
+  selector:
+    app: vaccine-efficacy
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: upload-folder-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard-rwo 

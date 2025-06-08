@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify
+from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify, flash
 import zipfile
 from werkzeug.utils import secure_filename
 import os
@@ -11,12 +11,17 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+app.secret_key = 'your-secret-key'  # Required for flashing messages
 
 processing_status = {'status': 'not_started', 'message': ''}
 
-UPLOAD_FOLDER = 'Upload_Folder'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+UPLOAD_FOLDER = './Upload_Folder'
+ALLOWED_EXTENSIONS = {'zip'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def hello():
@@ -263,5 +268,27 @@ def symptom_distribution():
 def get_processing_status():
     return jsonify(processing_status)
 
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            try:
+                process_uploaded_files(filepath)
+                flash('File processed successfully!')
+            except Exception as e:
+                flash(f'Error processing file: {str(e)}')
+            return redirect(url_for('upload_file'))
+    return render_template('index.html')
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8000)
