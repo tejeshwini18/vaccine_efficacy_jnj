@@ -23,10 +23,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-def hello():
-    return {'Message': 'Hello EHR API'}
-
 @app.route('/upload', methods=['POST'])
 def upload():
     if request.method == "POST":
