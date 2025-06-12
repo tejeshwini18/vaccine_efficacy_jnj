@@ -1,5 +1,6 @@
 # Tesseract OCR dependencies
 tesseract-ocr
+tesseract-ocr-eng
 libtesseract-dev
 libleptonica-dev
 
