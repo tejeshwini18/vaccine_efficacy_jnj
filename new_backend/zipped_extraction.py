@@ -9,6 +9,9 @@ import shutil
 import time
 import re
 
+# Configure OpenCV to work without GUI
+os.environ['OPENCV_HEADLESS'] = '1'
+
 # Set Tesseract path based on environment
 if os.name == 'nt':  # Windows
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
