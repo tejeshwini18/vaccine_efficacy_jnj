@@ -5,4 +5,6 @@ libsm6
 libxext6
 libxrender-dev
 libgl1-mesa-dev
-libarchive-dev 
+libarchive-dev
+libjpeg-dev
+zlib1g-dev 
