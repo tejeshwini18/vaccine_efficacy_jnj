@@ -13,7 +13,23 @@ import re
 if os.name == 'nt':  # Windows
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 else:  # Linux (Heroku)
-    pytesseract.pytesseract.tesseract_cmd = '/app/.apt/usr/bin/tesseract'
+    # Try multiple possible Tesseract paths
+    possible_paths = [
+        '/app/.apt/usr/bin/tesseract',
+        '/usr/bin/tesseract',
+        '/usr/local/bin/tesseract'
+    ]
+    
+    tesseract_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            tesseract_path = path
+            break
+            
+    if tesseract_path:
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+    else:
+        print("Warning: Tesseract not found in standard locations. OCR may not work.")
 
 # Create Upload_Folder if it doesn't exist
 UPLOAD_FOLDER = './Upload_Folder'
@@ -87,25 +103,33 @@ def extract_field(image, coords, field_name, field_type=''):
     Crop a region from image, preprocess it, save debug image, and extract text.
     coords: (x1, y1, x2, y2)
     """
-    x1, y1, x2, y2 = coords
-    cropped = image[y1:y2, x1:x2]
+    try:
+        x1, y1, x2, y2 = coords
+        cropped = image[y1:y2, x1:x2]
 
-    bw_image = convert_to_bw(cropped)
+        bw_image = convert_to_bw(cropped)
 
-    # Dilate to improve OCR
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
-    bw_image = cv2.dilate(bw_image, kernel, iterations=1)
+        # Dilate to improve OCR
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
+        bw_image = cv2.dilate(bw_image, kernel, iterations=1)
 
-    # Save cropped image for debugging
-    debug_path = os.path.join(DEBUG_IMAGE_DIR, f"{field_name}.png")
-    cv2.imwrite(debug_path, bw_image)
+        # Save cropped image for debugging
+        debug_path = os.path.join(DEBUG_IMAGE_DIR, f"{field_name}.png")
+        cv2.imwrite(debug_path, bw_image)
 
-    # Tesseract config for single line recognition
-    custom_config = r'--oem 3 --psm 7'
-    text = pytesseract.image_to_string(bw_image, config=custom_config)
+        # Tesseract config for single line recognition
+        custom_config = r'--oem 3 --psm 7'
+        try:
+            text = pytesseract.image_to_string(bw_image, config=custom_config)
+        except Exception as e:
+            print(f"OCR failed for field {field_name}: {str(e)}")
+            return ''
 
-    cleaned_text = clean_extracted_text(text, field_type)
-    return cleaned_text
+        cleaned_text = clean_extracted_text(text, field_type)
+        return cleaned_text
+    except Exception as e:
+        print(f"Error in extract_field for {field_name}: {str(e)}")
+        return ''
 
 def extract_data_from_pdf(file_path):
     """Extract required data fields from a single PDF file."""
@@ -241,12 +265,22 @@ def process_uploaded_files(zip_file_path):
             raise Exception("No PDF files found in the uploaded ZIP")
             
         results = []
+        successful_extractions = 0
+        
         for pdf_file in pdf_files:
             try:
                 extracted = extract_data_from_pdf(pdf_file)
-                results.append(extracted)
+                if extracted:  # Only add if we got some data
+                    results.append(extracted)
+                    successful_extractions += 1
             except Exception as e:
                 print(f"Error processing {pdf_file}: {e}")
+                continue
+        
+        if not results:
+            raise Exception("No data could be extracted from any PDF files")
+            
+        print(f"Successfully extracted data from {successful_extractions} out of {len(pdf_files)} PDF files")
         
         # Save results to CSV
         df = pd.DataFrame(results, columns=[
