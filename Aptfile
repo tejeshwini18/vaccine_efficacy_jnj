@@ -12,7 +12,7 @@ libavformat58
 libswscale5
 libv4l-0
 libxvidcore4
-libx264-155
+libx264-dev
 libgtk-3-0
 libatlas-base-dev
 libarchive13
