@@ -1,0 +1,145 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.header{
+    display: flex;
+    justify-content: space-around;
+}
+
+.header-img{
+    float: left;
+}
+.medical-details p{
+    display: inline;
+    margin-top: 30px;
+}
+.heart{
+    background: rgb(0, 0, 0);
+    position: relative;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+    transform: rotate(-45deg);
+  }
+.heart::after{
+    background: inherit;
+    border-radius: 50%;
+    content: '';
+    position:absolute;
+    top: -50%;
+    left: 0;
+    width: 50px;
+    height: 50px;
+
+}
+.heart::before{
+    background: inherit;
+    border-radius: 50%;
+    content: '';
+    position:absolute;
+    top: 0;
+    right: -50%;
+    width: 50px;
+    height: 50px;
+
+}
+
+.horizontal{
+    position: absolute;
+    top:30px;
+    left: 117px;
+    width: 10px;
+    height: 40px;
+    background-color: rgb(255, 255, 255);
+}
+.vertical{
+    position: absolute;
+    top: 43px;
+    left: 101px;
+    width: 45px;
+    height: 10px;
+    background-color: rgb(255, 255, 255);
+}
+
+
+body{
+    background-color: aquamarine;
+}
+.main{
+    width: 21cm;
+    height: 29.7cm;
+    background-color: white;
+    padding: 10px;
+}
+
+.line{
+    width: 100%;
+    height: 5px;
+    background-color: black;
+}
+.head{
+    font-weight: bold;
+    font-size: 12.5px;
+    margin: 30px 0px;
+}
+body{
+    font-size: 12.5px;
+}
+
+.header-body{
+    margin:20px 0;
+}
+/* Details like BP, Pulse rate */
+.details{
+    width: 100%;
+    margin: 20px 0px;
+}
+.details td{
+    padding: 3px;
+}
+.details-table{
+    border: 0;
+    width: 100%;
+}
+
+/* vaccination Details */
+.vaccination-details{
+    margin: 20px 0px;
+}
+
+/* Medicine table */
+.medicine table,tr,td,th{
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+.medicine th{
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+}
+.medicine table{
+    width: 100%;
+}
+.medicine td{
+    height: 16px;
+    font-size: 12px;
+    padding: 2px;
+}
+
+.footer{
+    margin:30px 0;
+}
+
+.general-advice{
+    margin:15px 0;
+}
+.patient-details p{
+    display: inline;
+}
+.patient-details .row{
+    margin: 10px 0;
+}

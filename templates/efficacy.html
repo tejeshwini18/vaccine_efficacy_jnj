@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='detail.css') }}">
+    <title>Efficacy</title>
+</head>
+<body>
+    <a href="/downloadFiltered">Download CSV</a>
+    <ol>
+
+        <li>Total number of records:4000</li>
+
+        <li>Number of people got vaccinated from JANSSEN:992</li>
+
+        <li>Number of people got covid positive after vaccination:126</li>
+
+    </ol>
+    <p>Efficacy Percentage: {{data}} % (Based on this set of Prescription)</p>
+    <hr>
+    <canvas id="ageChart" style="display:inline-block;max-width: 45%;"></canvas>
+
+    <canvas id="genderChart" style="display:inline-block;max-width:45%"></canvas>
+    <canvas id="quaterChart" style="display:inline-block;max-width:45%"></canvas>
+    
+
+    <script>
+        var temp = 
+            [{
+                "xVal": ["M","F"],
+                "yVal": ["79","47"]
+            },
+            {   "xVal":['61-70','71-80','81-90','91-100'],
+                "yVal":['35','29','36','22']
+            },
+            {
+                "xVal":['Q1','Q2','Q3','Q4'],
+                "yVal":[34,31,32,32]
+            }
+        ];
+            var barColors = ["red", "green","blue","orange","brown"];
+    
+    
+            new Chart("ageChart", {
+            type: "bar",
+            data: {
+                labels:  temp[1]["xVal"],
+                datasets: [{
+                backgroundColor: barColors,
+                data: temp[1]["yVal"]
+                }]
+            },
+            options: {
+                legend:{display:false},
+                title: {               
+                display: true,
+                text: "Efficacy Distribution based on Age"
+                },
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            suggestedMin: 17
+                        }
+                    }]
+                }
+
+            }
+            });
+
+            new Chart("genderChart", {
+            type: "pie",
+            data: {
+                labels:  temp[0]["xVal"],
+                datasets: [{
+                backgroundColor: barColors,
+                data: temp[0]["yVal"]
+                }]
+            },
+            options: {
+                title: {
+                display: true,
+                text: "Efficacy Distribution based on Gender"
+                }
+            }
+            })
+            new Chart("quaterChart", {
+            type: "bar",
+            data: {
+                labels:  temp[2]["xVal"],
+                datasets: [{
+                backgroundColor: barColors,
+                data: temp[2]["yVal"]
+                }]
+            },
+            options: {
+                legend:{display:false},
+                title: {               
+                display: true,
+                text: "Quater-wise distribution"
+                },
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            suggestedMin: 30
+                        }
+                    }]
+                }
+            }
+            });
+    
+    
+    </script>
+
+</body>
+
+
+</html>

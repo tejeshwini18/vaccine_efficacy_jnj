@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='datapageStyles.css') }}">
+    <title>Download Data</title>
+</head>
+<body>
+    <a href="/" class="homepage">Homepage</a>
+    <h2>Congrats! Your CSV File is Ready. You can Download it.</h2>
+    <div class="mainframe">
+        <a href="/efficacy">
+        <div class="efficacy">
+            Janssen Vaccination & Covid Details
+        </div>
+        </a>
+        <a href="/adverseEffect">
+        <div class="adverse">
+            Adverse Effect
+        </div> 
+        </a>      
+    </div>
+    
+    <!-- <p>Efficacy for current set of prescriptions is {{message}}%.</p> -->
+    <!-- <a href="/downloadcsv"> Download CSV</a> -->
+</body>
+</html>
